@@ -23,7 +23,7 @@ library(httr)
 library(jsonlite)
 # Register Google API key (replace "your_api_key" with your actual API key)
 register_google(key = "AIzaSyCq4alJdY60MRjNFOldG2OwWGNBW2SUxbw")
-coastline <- st_read("/Users/michaelmorrison/Documents/GitHub/MGSC410_Shiny-Application/tl_2019_us_coastline/tl_2019_us_coastline.shp")
+coastline <- st_read("tl_2019_us_coastline/tl_2019_us_coastline.shp")
 
 # Set your API key
 api_key <- "AIzaSyCq4alJdY60MRjNFOldG2OwWGNBW2SUxbw"
