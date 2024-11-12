@@ -13,6 +13,10 @@ This project uses Python 3.X and Shiny R to build the application and machine le
 This application was developed with a few features in mind: user input, prediction output, visual and clear display, and cloud hosting. This application has input fields for users to input their property features, such as size, location, and other relevant information. Next, the prediction output provides an estimated value of a property based on the inputted values. Next, the predicted property value is presented clearly for clear and simple insights. Finally, this application is deployed on an AWS EC2 instance for easier access through a web browser.
 ### Architecture
 The front end of this application was built using Shiny to provide a user-friendly interface and powerful capabilities. The back end of this application is a Python machine learning (XGBoost) model integrated within Shiny. Finally, this application is hotels on AWS EC2 using the Shiny Server.
+
+### Backend
+This backend takes in information from the user, but it also utilizes a Google API in order to provide the model information such as longitude, latitude, and picnic/attraction count.
+
 ### User Instructions
 To access this application, click the URL and enter the property details in the input fields. Following this, the user would receive the property estimate
 
