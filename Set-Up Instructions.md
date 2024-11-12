@@ -98,84 +98,125 @@ q() # Exit R
 install.packages(c("ggplot2","plotly")) # sample libraries
 q() # Exit R
 ```
-2.5) If Step 2 doesn't work, and the installation process appears to have stopped
-  * Reasoning: the packages you're installing might be too big for i2.micro to handle
-  * Alternatives:
-    1) Simplify your Model (XGBoost --> Linear Regression)
-    * XGBoost's package is pretty large, and the server might not have enough computational
-      power to fully install this package
-    2) Utilize Docker Containers
+  * If Step 2 doesn't work and the installation process appears to have stopped
+    * **Reasoning**: the packages you're installing might be too big for i2.micro to handle
+    * **Alternatives**:
+      1) Simplify your Model (XGBoost --> Linear Regression)
+         
+      * XGBoost's package is pretty large, and the server might not have enough computational
+        power to fully install this package
+        
+      2) Utilize Docker Containers
+### Utilize Docker Container (if needed)
+* Note! I recommend building your docker container on your local machine (if possible) to avoid any possible computational problems!
+* Make sure that docker is installed on your local machine & ubuntu server
+  ```
+  docker --version
+  ```
 
-1) R and Shiny: Ensure that R and Shiny are installed on your system.
-* Install R from CRAN.
-* Install Shiny in R by running:
-
-```
-install.packages("shiny")
-```
-2) Python and Dependencies: Python 3.X and necessary libraries must be installed.
-
-* Install Python from Python.org.
-* Install Python dependencies by running:
-bash
-```
-pip install xgboost pandas scikit-learn
-```
-3) Shiny Server (For Deployment on EC2): Install Shiny Server to host the application on AWS.
-* For instructions, please visit the Shiny Server installation guide.
+  a) Clone or Locate Your Git Hub Repo into a folder on your local computer
+  ```
+  sudo git clone https://github.com/your-username/your-repo-name
+  ```
+  b) Change the Directory to that folder in your local computer
+  ```
+  cd path/to/folder
+  ```
+  c) Create & Open a Dockerfile for the R Environment
+  ```
+  sudo nano Dockerfile
+  ```
+  d) Make Changes to the Dockerfile
+  ```
+  # Use an official R image
+  FROM rocker/r-ver:4.1.0  # replace with your R version
   
-## Running the App Locally
-1) Clone the Repository: Start by cloning the project repository in your computer's terminal.
-```
-git clone <https://github.com/tifle/MGSC410_Shiny-Application>
-cd MGSC410_Shiny-Application
-```
-2) Start R Shiny App:
-* Open R, set the working directory to the app folder, and run:
-```
-library(shiny)
-runApp("app")
-```
-* The app will open in a web browser, allowing you to input property details and get an estimate.
-
-## Run Backend Model:
-1) Ensure your Python environment is activated.
-2) Launch the Python script that contains the XGBoost model to start serving predictions (if using Flask or a REST API).
-
-## Deploying on AWS EC2
-1) Setup EC2 Instance:
-*  Launch an AWS EC2 instance (Ubuntu or Amazon Linux recommended).
-*  Open the following ports in the security group:
-  * 22 for SSH
-  * 3838 for Shiny Server
+  # Install system dependencies
+  RUN apt-get update && apt-get install -y \
+      libcurl4-openssl-dev \
+      libxml2-dev \
+      libssl-dev \
+      libomp-dev
   
-2)  Install Dependencies on EC2:
-*  Update and install R, Shiny, and Shiny Server.
+  # Install R packages
+  RUN R -e "install.packages(c('xgboost','sf','dplyr','ggmap','sp','geosphere'), repos = 'https://cloud.r-project.org')"
+  
+  # Optional: Copy your R scripts into the container
+  COPY . /app
+  
+  # Set the working directory
+  WORKDIR /app
+  
+  # Run R
+  CMD ["R"]
+  ```
+  e) Build the Docker Image
+  ```
+  docker build -t my-r-image .
+  ```
+    * `-t my-r-image` tags the image with a name "my-r-image"
+    * `.` specifies the current directory as the build context
+  * Note! If you're having permission errors
+    * Add the `ubuntu` user to the Docker group
+      ```
+      sudo usermod -aG docker ubuntu
+      ```
+    * Restart the session
+      ```
+      newgrp docker
+      ```
+    * Run the build command again
+    
+  f) Check if image is built
+  ```
+  docker images
+  ```
+  g) Save the Docker Image as a `.Tar` File
+  ```
+  docker save -o my-r-image.tar my-r-image
+  ```
+  h) Transfer Image to Your EC2 Instance
+  ```
+  scp -i /path/to/your/key.pem my-r-image.tar ec2-user@your-ec2-ip:/home/ec2-user/
+  ```
+    * Replace:
+      * `/path/to/your/key.pem` with your **EC2 key file path**
+      * `your-ec2-ip` with your **EC2 instance's public IP address**
+  i) Load Docker Image on EC2 Instance
+    * SSH into your EC2 Instance
+    ```
+    ssh -i /path/to/your/key.pem ec2-user@your-ec2-ip
+    ```
+    * Load Docker image from tar file
+    ```
+    docker load -i my-r-image.tar
+    ```
+  j) Run the Docker Container on the EC2 Instance
+  ```
+  docker run -it my-r-image
+  ```
+## Step 4: Deploy Your Application
+### 4.1 Download Your App from Github
+1. Navigate to the Shiny Server Directory on EC2
+   ```
+   cd/srv/shiny-server
+   ```
+2. Clone your GitHub Repo
 ```
-sudo apt update
-sudo apt install -y r-base
-sudo apt install gdebi-core
-wget wget https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-1.5.22.1017-amd64.deb
-sudo gdebi shiny-server-1.5.22.1017-amd64.deb
+sudo git clone https://github.com/your-username/your-repo-name
 ```
-3) Install Python and Model Dependencies:
+3. Move to the App Directory
+```
+cd shiny-app
+ls # see all the files in the directory
+```
+### 4.1 Start the Application
+1) Rename your application to `app.r``, since it's the name that Shiny expects
+```
+sudo mv your-app-name.r app.r
+```
+2) Access your application at: htttp://**your-ec2-public-id**:3838/**your-repo-name**
 
-* Install Python and required packages:
-```
-sudo apt install -y python3-pip
-pip3 install xgboost pandas scikit-learn
-```
-4) Deploy the App:
-* Copy your app files to /srv/shiny-server/ on the EC2 instance:
-```
-sudo cp -r /path-to-your-app /srv/shiny-server/real-estate-valuation-app
-```
-5) Start Shiny Server:
-* Shiny Server should start automatically. Access the app at:
-vbnet
-```
-http://<EC2-public-IP>:3838/real-estate-valuation-app/
-```
 ## Usage Instructions
 Open the App: Visit the app’s URL and enter the property details in the input fields.
 Get Prediction: After entering details, click "Generate" to receive an estimated property value and a map including nearby tourist attractions and picnic areas.
