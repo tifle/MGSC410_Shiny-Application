@@ -28,12 +28,19 @@ The app is designed for deployment on an AWS EC2 instance with a Shiny Server fo
    f) Launch Instance
 
 ### Option 1: Connecting Instance via SSH
+NOTE! Here are some sample values to help you find your unique AWS values
+|Name               |Structure                                                       |Sample                             |
+|:------------------|:--------------------------------------------------------------:|:----------------------------------|
+|Public IPv4 Address| Digits and "." |12.34.567.89
+|Your-ec2-public-ip | ec2-**public ipv4 address separated by "i"**.**serverArea**.compute.amazonaws.com|ec2-12-34-567-89.us-east-2.compute.amazonaws.com|
 1) Copy the Public IPv4 Address
 2) Open Windows Powershell or Mac Terminal
 3) Change the directory to where the .pem file is stored
 ```
 cd path\to\your-key.pem
 ```
+4) Connect to the instance
+* NOTE! Replace "your-key.pem" and "your-ec2-public-ip" to your key name and unique ec2-public-ip
 ### Option 2: Connecting Instance on AWS Site
 
 ## Prerequisites
