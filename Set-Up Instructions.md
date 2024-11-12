@@ -114,48 +114,48 @@ q() # Exit R
   docker --version
   ```
 
-  a) Clone or Locate Your Git Hub Repo into a folder on your local computer
-  ```
-  sudo git clone https://github.com/your-username/your-repo-name
-  ```
-  b) Change the Directory to that folder in your local computer
-  ```
-  cd path/to/folder
-  ```
-  c) Create & Open a Dockerfile for the R Environment
-  ```
-  sudo nano Dockerfile
-  ```
-  d) Make Changes to the Dockerfile
-  ```
-  # Use an official R image
-  FROM rocker/r-ver:4.1.0  # replace with your R version
-  
-  # Install system dependencies
-  RUN apt-get update && apt-get install -y \
-      libcurl4-openssl-dev \
-      libxml2-dev \
-      libssl-dev \
-      libomp-dev
-  
-  # Install R packages
-  RUN R -e "install.packages(c('xgboost','sf','dplyr','ggmap','sp','geosphere'), repos = 'https://cloud.r-project.org')"
-  
-  # Optional: Copy your R scripts into the container
-  COPY . /app
-  
-  # Set the working directory
-  WORKDIR /app
-  
-  # Run R
-  CMD ["R"]
-  ```
-  e) Build the Docker Image
-  ```
-  docker build -t my-r-image .
-  ```
-    * `-t my-r-image` tags the image with a name "my-r-image"
-    * `.` specifies the current directory as the build context
+1) Clone or Locate Your Git Hub Repo into a folder on your local computer
+```
+sudo git clone https://github.com/your-username/your-repo-name
+```
+2) Change the Directory to that folder in your local computer
+```
+cd path/to/folder
+```
+3) Create & Open a Dockerfile for the R Environment
+```
+sudo nano Dockerfile
+```
+4) Make Changes to the Dockerfile
+```
+# Use an official R image
+FROM rocker/r-ver:4.1.0  # replace with your R version
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libxml2-dev \
+    libssl-dev \
+    libomp-dev
+
+# Install R packages
+RUN R -e "install.packages(c('xgboost','sf','dplyr','ggmap','sp','geosphere'), repos = 'https://cloud.r-project.org')"
+
+# Optional: Copy your R scripts into the container
+COPY . /app
+
+# Set the working directory
+WORKDIR /app
+
+# Run R
+CMD ["R"]
+```
+5) Build the Docker Image
+```
+docker build -t my-r-image .
+```
+  * `-t my-r-image` tags the image with a name "my-r-image"
+  * `.` specifies the current directory as the build context
   * Note! If you're having permission errors
     * Add the `ubuntu` user to the Docker group
       ```
@@ -166,35 +166,35 @@ q() # Exit R
       newgrp docker
       ```
     * Run the build command again
-    
-  f) Check if image is built
+  
+6) Check if image is built
+```
+docker images
+```
+7) Save the Docker Image as a `.Tar` File
+```
+docker save -o my-r-image.tar my-r-image
+```
+8) Transfer Image to Your EC2 Instance
+```
+scp -i /path/to/your/key.pem my-r-image.tar ec2-user@your-ec2-ip:/home/ec2-user/
+```
+  * Replace:
+    * `/path/to/your/key.pem` with your **EC2 key file path**
+    * `your-ec2-ip` with your **EC2 instance's public IP address**
+9) Load Docker Image on EC2 Instance
+  * SSH into your EC2 Instance
   ```
-  docker images
+  ssh -i /path/to/your/key.pem ec2-user@your-ec2-ip
   ```
-  g) Save the Docker Image as a `.Tar` File
+  * Load Docker image from tar file
   ```
-  docker save -o my-r-image.tar my-r-image
+  docker load -i my-r-image.tar
   ```
-  h) Transfer Image to Your EC2 Instance
-  ```
-  scp -i /path/to/your/key.pem my-r-image.tar ec2-user@your-ec2-ip:/home/ec2-user/
-  ```
-    * Replace:
-      * `/path/to/your/key.pem` with your **EC2 key file path**
-      * `your-ec2-ip` with your **EC2 instance's public IP address**
-  i) Load Docker Image on EC2 Instance
-    * SSH into your EC2 Instance
-    ```
-    ssh -i /path/to/your/key.pem ec2-user@your-ec2-ip
-    ```
-    * Load Docker image from tar file
-    ```
-    docker load -i my-r-image.tar
-    ```
-  j) Run the Docker Container on the EC2 Instance
-  ```
-  docker run -it my-r-image
-  ```
+10) Run the Docker Container on the EC2 Instance
+```
+docker run -it my-r-image
+```
 ## Step 4: Deploy Your Application
 ### 4.1 Download Your App from Github
 1. Navigate to the Shiny Server Directory on EC2
