@@ -77,4 +77,4 @@ http://<EC2-public-IP>:3838/real-estate-valuation-app/
 ```
 ## Usage Instructions
 Open the App: Visit the app’s URL and enter the property details in the input fields.
-Get Prediction: After entering details, click "Predict" to receive an estimated property value.
+Get Prediction: After entering details, click "Generate" to receive an estimated property value and a map including nearby tourist attractions and picnic areas.

@@ -15,6 +15,10 @@ library(dplyr)
 library(ggmap)
 library(sp)
 library(geosphere)
+#install.packages("bslib")
+library(bslib)  # for theme
+install.packages("scales")
+library(scales)
 
 install.packages("httr")
 #install.packages("jsonlite")
@@ -53,15 +57,22 @@ model <- readRDS("model.rds")
 str(model)
 # Define UI for the Shiny app
 ui <- fluidPage(
+    theme = bs_theme(
+    bg = "#36454F",  # Background color for the app
+    fg = "#FFFFFF",  # Text color
+    primary = "#007bff",  # Primary color (e.g., for buttons)
+    secondary = "#28a745",  # Secondary color (e.g., for other elements)
+    base_font = font_google("Roboto")  # Font style
+  ),
     titlePanel("House Price Prediction"),
     
     sidebarLayout(
         sidebarPanel(
-            textInput("address", "address:", value = "1600 Amphitheatre Parkway, Mountain View, CA, USA"),
+            textInput("address", "address:", value = "121 34th Street, Newport Beach, CA, USA"),
             selectInput("hometype", "Select Home Type:", choices = c('SINGLE_FAMILY', 'TOWNHOUSE', 'MULTI_FAMILY', 'CONDO', 'APARTMENT',
        'LOT', 'HOME_TYPE_UNKNOWN', 'MANUFACTURED'), 
                   selected = "SINGLE_FAMILY", multiple = FALSE),
-            numericInput("zipcode", "Zipcode: ", value = 90000, min = 0),
+            numericInput("zipcode", "Zipcode: ", value = 92663, min = 0),
             numericInput("bedrooms", "Number of Bedrooms:", value = 1, min = 1),
             numericInput("bathrooms", "Number of Bathrooms:", value = 1, min = 1),
             numericInput("sqft", "Square Footage:", value = 1500, min = 500),
@@ -198,7 +209,7 @@ server <- function(input, output) {
         
         # Make the prediction
         predicted_price <- predict(model, input_matrix)
-        round(predicted_price, 2)  # Round to two decimal places
+        comma(round(predicted_price, 2))  # Round to two decimal places
     })
     
     # Output the prediction result
