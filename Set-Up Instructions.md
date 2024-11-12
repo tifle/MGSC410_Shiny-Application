@@ -26,8 +26,8 @@ pip install xgboost pandas scikit-learn
 ## Running the App Locally
 1) Clone the Repository: Start by cloning the project repository in your computer's terminal.
 ```
-git clone <repository-url>
-cd real-estate-valuation-app
+git clone <https://github.com/tifle/MGSC410_Shiny-Application>
+cd MGSC410_Shiny-Application
 ```
 2) Start R Shiny App:
 * Open R, set the working directory to the app folder, and run:
@@ -54,8 +54,8 @@ runApp("app")
 sudo apt update
 sudo apt install -y r-base
 sudo apt install gdebi-core
-wget https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.16.958-amd64.deb
-sudo gdebi shiny-server-1.5.16.958-amd64.deb
+wget wget https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-1.5.22.1017-amd64.deb
+sudo gdebi shiny-server-1.5.22.1017-amd64.deb
 ```
 3) Install Python and Model Dependencies:
 
