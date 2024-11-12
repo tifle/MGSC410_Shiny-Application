@@ -4,7 +4,9 @@ This Shiny app provides real estate value estimation based on user-provided prop
 The backend utilizes an XGBoost model built in Python for property prediction values. 
 The app is designed for deployment on an AWS EC2 instance with a Shiny Server for easy accessibility.
 
-## Setting Up an AWS EC2 Instance
+Disclaimer! This guide is for setting up a Shiny Application built on R.
+
+## Step 2: Setting Up an AWS EC2 Instance
 ### Launching a New EC2 Instance
 1) Sign into your AWS Amazon Account
 2) In AWS Management Console, select **EC2**
@@ -27,7 +29,7 @@ The app is designed for deployment on an AWS EC2 instance with a Shiny Server fo
       |Custom TCP|80      |Anywhere|
    f) Launch Instance
 
-### Option 1: Connecting Instance via SSH
+### Option 1: Connecting Instance via SSH -- Longer Version
 NOTE! Here are some sample values to help you find your unique AWS values
 |Name               |Structure                                                       |Sample                             |
 |:------------------|:--------------------------------------------------------------:|:----------------------------------|
@@ -40,10 +42,70 @@ NOTE! Here are some sample values to help you find your unique AWS values
 cd path\to\your-key.pem
 ```
 4) Connect to the instance
+```
+ssh -i "your-key.perm" ubuntu@"your-ec2-public-ip"
+```
 * NOTE! Replace "your-key.pem" and "your-ec2-public-ip" to your key name and unique ec2-public-ip
-### Option 2: Connecting Instance on AWS Site
+* Confirm with **yes** when prompted, and now you've successfully connected to the Ubuntu Server!
+  
+### Option 2: Connecting Instance on AWS Site - Shortcut Version
+1) Navigate to your instance on Amazon AWS
+2) Click **Connect**, and it'll navigate you to a power shell/terminal that's already connected to the Ubuntu Server
 
-## Prerequisites
+## Step 3: Installing the Appropriate Packages
+### 3.1 - Update the Instance & R
+1) Update the Package Lists
+  ```
+sudo apt update && sudo apt upgrade -y
+```
+2) Install R
+```
+sudo apt-get install r-base
+```
+3) Install the Shiny R Package
+```
+sudo su - -c "R -e \"install.packages('shiny', repos='https://cran.rstudio.com/')\""
+```
+### 3.2 - Install the Shiny Server
+Disclaimer, the following information was sourced from [Shiny Server](https://posit.co/download/shiny-server/), so the information might be updated for future updates :)
+
+1) Download `gdebi` which is used to install the Shiny Server & its dependencies
+```
+sudo apt-get install gdebi-core
+```
+2)  Install Shiny Server Software for Ubuntu 18.04+
+```
+wget https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-1.5.22.1017-amd64.deb
+```
+3)  Install Shiny Server Debain Package for Ubuntu
+```
+sudo gdebi shiny-server-1.5.22.1017-amd64.deb
+```
+
+### 3.3 - Install Required Packages
+1) Open the R console as Root (this will give your permissions to install)
+```
+sudo R
+```
+2) Install the necessary libraries
+```
+# Installing One Package
+install.packages("ggplot2")
+q() # Exit R
+```
+```
+# Installing Multiple Packages
+install.packages(c("ggplot2","plotly")) # sample libraries
+q() # Exit R
+```
+2.5) If Step 2 doesn't work, and the installation process appears to have stopped
+  * Reasoning: the packages you're installing might be too big for i2.micro to handle
+  * Alternatives:
+    1) Simplify your Model (XGBoost --> Linear Regression)
+    * XGBoost's package is pretty large, and the server might not have enough computational
+      power to fully install this package
+    2) Utilize Docker Containers
+
 1) R and Shiny: Ensure that R and Shiny are installed on your system.
 * Install R from CRAN.
 * Install Shiny in R by running:
