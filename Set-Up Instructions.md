@@ -4,6 +4,38 @@ This Shiny app provides real estate value estimation based on user-provided prop
 The backend utilizes an XGBoost model built in Python for property prediction values. 
 The app is designed for deployment on an AWS EC2 instance with a Shiny Server for easy accessibility.
 
+## Setting Up an AWS EC2 Instance
+### Launching a New EC2 Instance
+1) Sign into your AWS Amazon Account
+2) In AWS Management Console, select **EC2**
+3) Click Launch Instance
+  a) Name instance (i.e. "Shiny-App Server") -- can be anything you would like
+  b) **AMI**: **Ubuntu Server 24.04 LTS** 
+  c) **Instance Type**: `t2.micro`
+  d) **Key Pair**:
+    * Create a new key
+    * Name it (i.e. "Shiny Key") -- can be anything you would like
+    * Select **.pem** format
+    * Download & save it in a place you'll remember
+  e) **Security Group**
+    * Four (4) Inbound Rules
+      |  Type    | Port # | Source |
+      |:---------|:------:|:------:|
+      |SSH       |22      |Anywhere|
+      |Custom TCP|3838    |Anywhere|
+      |Custom TCP|8000    |Anywhere|
+      |Custom TCP|80      |Anywhere|
+   f) Launch Instance
+
+### Option 1: Connecting Instance via SSH
+1) Copy the Public IPv4 Address
+2) Open Windows Powershell or Mac Terminal
+3) Change the directory to where the .pem file is stored
+```
+cd path\to\your-key.pem
+```
+### Option 2: Connecting Instance on AWS Site
+
 ## Prerequisites
 1) R and Shiny: Ensure that R and Shiny are installed on your system.
 * Install R from CRAN.
