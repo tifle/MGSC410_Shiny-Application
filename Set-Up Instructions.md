@@ -107,15 +107,16 @@ q() # Exit R
         power to fully install this package
         
       2) Utilize CMake
-         ```
-         git clone --recursive https://github.com/dmlc/xgboost
-         cd xgboost
-         mkdir build
-         cd build
-         cmake .. -DR_LIB=ON
-         make -j$(nproc)
-         make install
-         ```
+### Utilize CMake
+   ```
+   git clone --recursive https://github.com/dmlc/xgboost
+   cd xgboost
+   mkdir build
+   cd build
+   cmake .. -DR_LIB=ON
+   make -j$(nproc)
+   make install
+   ```
 ### Utilize Docker Container (if needed) <-- IGNORE THIS RN
 * Make sure that docker is installed on your local machine & ubuntu server
   ```
