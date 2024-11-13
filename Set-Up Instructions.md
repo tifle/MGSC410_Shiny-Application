@@ -106,27 +106,27 @@ q() # Exit R
       * XGBoost's package is pretty large, and the server might not have enough computational
         power to fully install this package
         
-      2) Utilize Docker Containers
-### Utilize Docker Container (if needed)
-* Note! I recommend building your docker container on your local machine (if possible) to avoid any possible computational problems!
+      2) Utilize CMake
+         ```
+         git clone --recursive https://github.com/dmlc/xgboost
+         cd xgboost
+         mkdir build
+         cd build
+         cmake .. -DR_LIB=ON
+         make -j$(nproc)
+         make install
+         ```
+### Utilize Docker Container (if needed) <-- IGNORE THIS RN
 * Make sure that docker is installed on your local machine & ubuntu server
   ```
   docker --version
   ```
-
-1) Clone or Locate Your Git Hub Repo into a folder on your local computer
-```
-sudo git clone https://github.com/your-username/your-repo-name
-```
-2) Change the Directory to that folder in your local computer
-```
-cd path/to/folder
-```
-3) Create & Open a Dockerfile for the R Environment
+  
+1) Create & Open a Dockerfile for the R Environment
 ```
 sudo nano Dockerfile
 ```
-4) Make Changes to the Dockerfile
+2) Make Changes to the Dockerfile
 ```
 # Use an official R image
 FROM rocker/r-ver:4.1.0  # replace with your R version
@@ -150,48 +150,30 @@ WORKDIR /app
 # Run R
 CMD ["R"]
 ```
-5) Build the Docker Image
+3) Construct the docker-compose.yaml file
 ```
-docker build -t my-r-image .
+# docker-compose.yaml
+# Simple R Shiny web app configuration
+
+version: '3.8'
+services:
+  app:
+    container_name: shiny-r-app
+    build:
+      context: .
+      dockerfile: Dockerfile  # Make sure you have a Dockerfile with R and Shiny setup
+    ports:
+      - "80:3838"  # Map port 3838 (default for Shiny) to port 80 on your local machine
+    environment:
+      - SHINY_LOG_LEVEL=INFO  # Optional: Set Shiny log level
+    restart: unless-stopped
+
 ```
-  * `-t my-r-image` tags the image with a name "my-r-image"
-  * `.` specifies the current directory as the build context
-  * Note! If you're having permission errors
-    * Add the `ubuntu` user to the Docker group
-      ```
-      sudo usermod -aG docker ubuntu
-      ```
-    * Restart the session
-      ```
-      newgrp docker
-      ```
-    * Run the build command again
-  
-6) Check if image is built
+4) Build the Docker Image in your App Directory on the Ubuntu Server
 ```
-docker images
+docker-compose up --build
 ```
-7) Save the Docker Image as a `.Tar` File
-```
-docker save -o my-r-image.tar my-r-image
-```
-8) Transfer Image to Your EC2 Instance
-```
-scp -i /path/to/your/key.pem my-r-image.tar ec2-user@your-ec2-ip:/home/ec2-user/
-```
-  * Replace:
-    * `/path/to/your/key.pem` with your **EC2 key file path**
-    * `your-ec2-ip` with your **EC2 instance's public IP address**
-9) Load Docker Image on EC2 Instance
-  * SSH into your EC2 Instance
-  ```
-  ssh -i /path/to/your/key.pem ec2-user@your-ec2-ip
-  ```
-  * Load Docker image from tar file
-  ```
-  docker load -i my-r-image.tar
-  ```
-10) Run the Docker Container on the EC2 Instance
+5) Run the Docker Container on the EC2 Instance
 ```
 docker run -it my-r-image
 ```
