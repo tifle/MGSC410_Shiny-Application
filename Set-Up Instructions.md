@@ -117,67 +117,7 @@ q() # Exit R
    make -j$(nproc)
    make install
    ```
-### Utilize Docker Container (if needed) <-- IGNORE THIS RN
-* Make sure that docker is installed on your local machine & ubuntu server
-  ```
-  docker --version
-  ```
-  
-1) Create & Open a Dockerfile for the R Environment
-```
-sudo nano Dockerfile
-```
-2) Make Changes to the Dockerfile
-```
-# Use an official R image
-FROM rocker/r-ver:4.1.0  # replace with your R version
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    libcurl4-openssl-dev \
-    libxml2-dev \
-    libssl-dev \
-    libomp-dev
-
-# Install R packages
-RUN R -e "install.packages(c('xgboost','sf','dplyr','ggmap','sp','geosphere'), repos = 'https://cloud.r-project.org')"
-
-# Optional: Copy your R scripts into the container
-COPY . /app
-
-# Set the working directory
-WORKDIR /app
-
-# Run R
-CMD ["R"]
-```
-3) Construct the docker-compose.yaml file
-```
-# docker-compose.yaml
-# Simple R Shiny web app configuration
-
-version: '3.8'
-services:
-  app:
-    container_name: shiny-r-app
-    build:
-      context: .
-      dockerfile: Dockerfile  # Make sure you have a Dockerfile with R and Shiny setup
-    ports:
-      - "80:3838"  # Map port 3838 (default for Shiny) to port 80 on your local machine
-    environment:
-      - SHINY_LOG_LEVEL=INFO  # Optional: Set Shiny log level
-    restart: unless-stopped
-
-```
-4) Build the Docker Image in your App Directory on the Ubuntu Server
-```
-docker-compose up --build
-```
-5) Run the Docker Container on the EC2 Instance
-```
-docker run -it my-r-image
-```
 ## Step 4: Deploy Your Application
 ### 4.1 Download Your App from Github
 1. Navigate to the Shiny Server Directory on EC2
@@ -201,5 +141,5 @@ sudo mv your-app-name.r app.r
 2) Access your application at: htttp://**your-ec2-public-id**:3838/**your-repo-name**
 
 ## Usage Instructions
-Open the App: Visit the app’s URL and enter the property details in the input fields.
+Open the App: Visit the app’s [URL](http://13.57.215.133:3838/MGSC410_Shiny-Application/) and enter the property details in the input fields.
 Get Prediction: After entering details, click "Generate" to receive an estimated property value and a map including nearby tourist attractions and picnic areas.
