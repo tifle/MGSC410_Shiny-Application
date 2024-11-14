@@ -1,5 +1,5 @@
 library(shiny)
-options(repos = c(CRAN = "https://cloud.r-project.org"))
+#options(repos = c(CRAN = "https://cloud.r-project.org"))
 #install.packages("xgboost")
 #install.packages("sf")
 #install.packages("dplyr")
