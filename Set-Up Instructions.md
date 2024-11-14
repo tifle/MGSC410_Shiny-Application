@@ -107,6 +107,7 @@ q() # Exit R
         power to fully install this package
         
       2) Utilize CMake
+      3) Upgrade your instance to t2.medium for the installation process (Note! It does come with an hourly fee)
 ### Utilize CMake
    ```
    git clone --recursive https://github.com/dmlc/xgboost
