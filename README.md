@@ -6,7 +6,7 @@
 * Tiffany Le
 
 ## Application Link
-http://13.57.215.133:3838/MGSC410_Shiny-Application/
+http://54.67.53.104:3838/MGSC410_Shiny-Application/
 
 ### Overview
 This Shiny web application allows users to input property details and receive an estimation value based on a trained machine-learning model. This is designed as a tool for real estate stakeholders or home users to predict property values based on various property attributes such as location, size, and relevant financial information. This application allows users to estimate their house value through a simple application.
