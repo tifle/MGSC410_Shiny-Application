@@ -4,7 +4,10 @@
 ### Co-Authors
 * Michael Morrison
 * Tiffany Le
-  
+
+## Application Link
+http://13.57.215.133:3838/MGSC410_Shiny-Application/
+
 ### Overview
 This Shiny web application allows users to input property details and receive an estimation value based on a trained machine-learning model. This is designed as a tool for real estate stakeholders or home users to predict property values based on various property attributes such as location, size, and relevant financial information. This application allows users to estimate their house value through a simple application.
 ### Built With
@@ -18,5 +21,5 @@ The front end of this application was built using Shiny to provide a user-friend
 This backend takes in information from the user, but it also utilizes a Google API in order to provide the model information such as longitude, latitude, and picnic/attraction count.
 
 ### User Instructions
-To access this application, click the URL and enter the property details in the input fields. Following this, the user would receive the property estimate
+To access this application, click the [URL](http://13.57.215.133:3838/MGSC410_Shiny-Application/) and enter the property details in the input fields. Following this, the user would receive the property estimate
 
